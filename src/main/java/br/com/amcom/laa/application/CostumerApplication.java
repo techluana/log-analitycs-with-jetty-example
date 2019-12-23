@@ -5,7 +5,9 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
-import br.com.amcom.laa.resources.ApiTestResources;
+import br.com.amcom.laa.resources.ConsumerResources;
+import br.com.amcom.laa.resources.HealthResources;
+import br.com.amcom.laa.resources.SearchResources;
 
 public class CostumerApplication extends Application {
 
@@ -13,7 +15,9 @@ public class CostumerApplication extends Application {
 	private Set<Class<?>> empty = new HashSet<Class<?>>();
 
 	public CostumerApplication() {
-		singletons.add(new ApiTestResources());
+		singletons.add(new ConsumerResources());
+		singletons.add(new HealthResources());
+		singletons.add(new SearchResources());
 	}
 
 	@Override

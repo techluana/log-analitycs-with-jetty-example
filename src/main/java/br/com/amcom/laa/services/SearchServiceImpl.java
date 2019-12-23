@@ -12,6 +12,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.script.Script;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.BucketOrder;
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramAggregationBuilder;
@@ -27,6 +28,7 @@ import br.com.amcom.laa.configuration.ElasticsearchConfiguration;
 import br.com.amcom.laa.constants.ElasticsearchConstants;
 import br.com.amcom.laa.dto.LogCountReturnDTO;
 import br.com.amcom.laa.dto.LogDateReturnDTO;
+import br.com.amcom.laa.exceptions.ElasticsearchDefaultException;
 import br.com.amcom.laa.exceptions.ElasticsearchNotResultException;
 
 public class SearchServiceImpl implements SearchService {
@@ -99,8 +101,36 @@ public class SearchServiceImpl implements SearchService {
 
 	@Override
 	public List<LogCountReturnDTO> searchTop3ByParams(Integer day, Integer week, Integer year) {
-		// TODO Auto-generated method stub
-		return null;
+		if(null == day && null == week && null == year) {
+			throw new ElasticsearchDefaultException("Enter day, week, or year for results");
+		}
+		
+		ElasticsearchConfiguration config = new ElasticsearchConfiguration();
+		SearchRequest searchRequest = new SearchRequest(ElasticsearchConstants.INDEX);
+        TermsAggregationBuilder aggregationBuilder = getCountAggregationBuilderMinuteLessAccess(ElasticsearchConstants.SEARCH_NAME, 
+				ElasticsearchConstants.SEARCH_FIELD_URL);
+        SearchSourceBuilder searchBuilder = getSearchBuilder(aggregationBuilder);
+        addQueryBuilders(searchBuilder, ElasticsearchConstants.QUERY_BY_DAY, day);
+        addQueryBuilders(searchBuilder, ElasticsearchConstants.QUERY_BY_WEEK, week);
+        addQueryBuilders(searchBuilder, ElasticsearchConstants.QUERY_BY_YEAR, year);
+        
+        searchRequest.source(searchBuilder);
+        SearchResponse searchResponse = null;
+		try {
+			searchResponse = config.getClient().search(searchRequest, RequestOptions.DEFAULT);
+		} catch (IOException e) {
+			LOGGER.error(e);
+			throw new ElasticsearchNotResultException(e);
+		}finally {
+			config.close();
+		}
+		return getObjectsFromBuckets(searchResponse);
+	}
+	
+	private void addQueryBuilders(SearchSourceBuilder searchBuilder, String script, Integer value) {
+		if(null != value) {
+			searchBuilder.query(QueryBuilders.scriptQuery(new Script(script.concat(ElasticsearchConstants.QUERY_EQUALS).concat(value.toString()))));
+		}
 	}
 
 	@Override
@@ -148,14 +178,14 @@ public class SearchServiceImpl implements SearchService {
 		return AggregationBuilders.terms(nameAgreggation)
                 .field(field)
                 .size(size)
-                .order(BucketOrder.aggregation("_count", true));
+                .order(BucketOrder.aggregation(ElasticsearchConstants.SEARCH_AGGREGATION, false));
 	}
 	
 	private TermsAggregationBuilder getCountAggregationBuilderMinuteLessAccess(String nameAgreggation, String field) {
 		return AggregationBuilders.terms(nameAgreggation)
                 .field(field)
                 .size(1)
-                .order(BucketOrder.aggregation("_count", false));
+                .order(BucketOrder.aggregation(ElasticsearchConstants.SEARCH_AGGREGATION, true));
 	}
 	
 	private DateHistogramAggregationBuilder getCountAggregationBuilderByMinutes(String nameAgreggation, String field) {
@@ -165,7 +195,7 @@ public class SearchServiceImpl implements SearchService {
 				.fixedInterval(DateHistogramInterval.MINUTE)
 				.format("yyyy-MM-dd:HH.mm")
 				.minDocCount(1)
-				.order(BucketOrder.aggregation("_count", false));
+				.order(BucketOrder.aggregation(ElasticsearchConstants.SEARCH_AGGREGATION, false));
 	}
 	
 	private LogCountReturnDTO bucketToObject(Terms.Bucket bucket) {

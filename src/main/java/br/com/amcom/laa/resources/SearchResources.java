@@ -6,6 +6,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -33,6 +34,25 @@ public class SearchResources {
 	public Response searchTop3Region(@PathParam("region") Long region) {
 		SearchService service = new SearchServiceImpl();
 		List<LogCountReturnDTO> result = service.searchTop3urlByRegion(region.intValue());
+		return Response.status(Status.OK).entity(result).build();
+	}
+	
+	@GET
+	@Path("/less-url-access")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response searchLessURLAccess() {
+		SearchService service = new SearchServiceImpl();
+		LogCountReturnDTO result = service.searchUrlLessAccess();
+		return Response.status(Status.OK).entity(result).build();
+	}
+	
+	@GET
+	@Path("/top-3/params")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response searchTop3Region(@QueryParam(value = "day") Integer day, 
+			@QueryParam(value = "week") Integer week, @QueryParam(value = "year") Integer year) {
+		SearchService service = new SearchServiceImpl();
+		List<LogCountReturnDTO> result = service.searchTop3ByParams(day, week, year);
 		return Response.status(Status.OK).entity(result).build();
 	}
 	

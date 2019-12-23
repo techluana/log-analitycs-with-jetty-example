@@ -11,11 +11,18 @@ public class ElasticsearchConstants {
 	public static final String USER = "elastic";
 	public static final String PASS = "TyMgHArrkkkRa0rEUcv5QtD5";
 	
+	public static final String SEARCH_AGGREGATION = "_count";
+	
 	public static final String SEARCH_NAME = "search_query";
 	public static final String SEARCH_FIELD_URL = "url";
 	public static final String SEARCH_FIELD_REGION = "server";
 	public static final String SEARCH_FIELD_DATE = "request_date";
 	public static final int SEARCH_SIZE_3 = 3;
+	
+	public static final String QUERY_BY_DAY = "doc.request_date.value.dayOfMonth";
+	public static final String QUERY_BY_WEEK = "doc.request_date.value.weekOfYear";
+	public static final String QUERY_BY_YEAR = "doc.request_date.value.year";
+	public static final String QUERY_EQUALS = "==";
 	
 	
 	public static String getHost() {

@@ -107,8 +107,8 @@ public class SearchServiceImpl implements SearchService {
 		
 		ElasticsearchConfiguration config = new ElasticsearchConfiguration();
 		SearchRequest searchRequest = new SearchRequest(ElasticsearchConstants.INDEX);
-        TermsAggregationBuilder aggregationBuilder = getCountAggregationBuilderMinuteLessAccess(ElasticsearchConstants.SEARCH_NAME, 
-				ElasticsearchConstants.SEARCH_FIELD_URL);
+        TermsAggregationBuilder aggregationBuilder = getCountAggregationBuilder(ElasticsearchConstants.SEARCH_NAME, 
+				ElasticsearchConstants.SEARCH_FIELD_URL, ElasticsearchConstants.SEARCH_SIZE_3);
         SearchSourceBuilder searchBuilder = getSearchBuilder(aggregationBuilder);
         addQueryBuilders(searchBuilder, ElasticsearchConstants.QUERY_BY_DAY, day);
         addQueryBuilders(searchBuilder, ElasticsearchConstants.QUERY_BY_WEEK, week);
@@ -184,7 +184,7 @@ public class SearchServiceImpl implements SearchService {
 	private TermsAggregationBuilder getCountAggregationBuilderMinuteLessAccess(String nameAgreggation, String field) {
 		return AggregationBuilders.terms(nameAgreggation)
                 .field(field)
-                .size(3)
+                .size(1)
                 .order(BucketOrder.aggregation(ElasticsearchConstants.SEARCH_AGGREGATION, true));
 	}
 	

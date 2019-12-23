@@ -20,7 +20,7 @@ public class ElasticsearchConstants {
 	public static final int SEARCH_SIZE_3 = 3;
 	
 	public static final String QUERY_BY_DAY = "doc.request_date.value.dayOfMonth";
-	public static final String QUERY_BY_WEEK = "doc.request_date.value.weekOfYear";
+	public static final String QUERY_BY_WEEK = "doc.request_date.value.getWeekOfWeekyear()";
 	public static final String QUERY_BY_YEAR = "doc.request_date.value.year";
 	public static final String QUERY_EQUALS = "==";
 	

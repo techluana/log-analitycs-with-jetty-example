@@ -12,7 +12,7 @@ import br.com.amcom.laa.resources.SearchResources;
 public class CostumerApplication extends Application {
 
 	private Set<Object> singletons = new HashSet<Object>();
-	private Set<Class<?>> empty = new HashSet<Class<?>>();
+	private Set<Class<?>> classes = new HashSet<Class<?>>();
 
 	public CostumerApplication() {
 		singletons.add(new ConsumerResources());
@@ -22,7 +22,7 @@ public class CostumerApplication extends Application {
 
 	@Override
 	public Set<Class<?>> getClasses() {
-		return empty;
+		return classes;
 	}
 
 	@Override

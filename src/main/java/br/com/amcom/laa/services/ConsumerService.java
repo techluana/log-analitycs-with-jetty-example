@@ -4,5 +4,5 @@ import br.com.amcom.laa.dto.LogDTO;
 
 public interface ConsumerService {
 
-	void saveLog(LogDTO entity);
+	Integer saveLog(LogDTO entity);
 }

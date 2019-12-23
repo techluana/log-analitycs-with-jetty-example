@@ -21,7 +21,7 @@ public class ConsumerServiceImpl implements ConsumerService {
 	private static final Logger LOGGER = LogManager.getLogger(ConsumerServiceImpl.class);
 
 	@Override
-	public void saveLog(LogDTO entity) {
+	public Integer saveLog(LogDTO entity) {
 		IndexRequest request = new IndexRequest(ElasticsearchConstants.INDEX);
 		String objectPost = new LogObjectMapper().getJsonValue(entity);
 		request.source(objectPost, XContentType.JSON);
@@ -40,5 +40,6 @@ public class ConsumerServiceImpl implements ConsumerService {
 		if(null == response || !Result.CREATED.equals(response.getResult())) {
 			throw new ElasticsearchNotResultException();
 		}
+		return response.status().getStatus();
 	}
 }

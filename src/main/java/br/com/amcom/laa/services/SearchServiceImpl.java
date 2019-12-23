@@ -184,7 +184,7 @@ public class SearchServiceImpl implements SearchService {
 	private TermsAggregationBuilder getCountAggregationBuilderMinuteLessAccess(String nameAgreggation, String field) {
 		return AggregationBuilders.terms(nameAgreggation)
                 .field(field)
-                .size(1)
+                .size(3)
                 .order(BucketOrder.aggregation(ElasticsearchConstants.SEARCH_AGGREGATION, true));
 	}
 	

@@ -15,7 +15,7 @@
 		<jetty-version>9.4.24.v20191120</jetty-version>
 		<junit-version>4.12</junit-version>
 		<servlet-api-version>2.5</servlet-api-version>
-		<resteasy-version>4.4.2.Final</resteasy-version>
+		<resteasy-version>4.5.7.Final</resteasy-version>
 		<elasticsearch-version>7.5.1</elasticsearch-version>
 		<log4j-version>2.13.0</log4j-version>
 		<mockito-version>3.2.4</mockito-version>
